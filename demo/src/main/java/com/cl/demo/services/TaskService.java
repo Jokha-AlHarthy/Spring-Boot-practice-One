@@ -13,9 +13,17 @@ import java.util.*;
 @Service
 public class TaskService {
     public static final String TASK_SAVED = "Task Saved";
+    public static final String ERROR_INVALID="Title can't be empty";
+
     //addTask(...) Map (text)
     public Map<String, String> addTask(TaskCreateRequest requestObj){
         Map<String , String> response = new HashMap<>();
+
+        if(requestObj.getTitle() == null || requestObj.getTitle().trim().isEmpty()){
+            response.put("error", ERROR_INVALID);
+            return response;
+        }
+
         Task task = new Task();
         task.setId(UUID.randomUUID());
         task.setIsActive(Boolean.TRUE);
