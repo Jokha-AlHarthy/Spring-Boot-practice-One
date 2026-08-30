@@ -2,11 +2,15 @@ package com.cl.demo.services;
 
 import com.cl.demo.DemoApplication;
 import com.cl.demo.entities.Person;
+import com.cl.demo.entities.PhoneNumber;
 import com.cl.demo.entities.UserName;
 import com.cl.demo.requestobjects.PersonCreateRequest;
 import com.cl.demo.requestobjects.PersonUpdateRequest;
+import com.cl.demo.requestobjects.PhoneNumberCreateRequest;
+import com.cl.demo.requestobjects.UserNameCreateRequest;
 import com.cl.demo.utils.HelperUtils;
 import org.apache.catalina.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -16,6 +20,13 @@ public class PersonService {
 
     public static final String PERSON_USERNAME_OR_EMAIL_ALREADY_TAKEN = "Given username or email is already taken";
     public static final String PERSON_SAVED = "Person saved";
+
+    @Autowired
+    private UserNameService userNameService;
+
+    @Autowired
+    private PhoneNumberService phoneNumberService;
+
 
     public Map<String, String> addPerson(PersonCreateRequest requestObj) {
 
@@ -31,14 +42,25 @@ public class PersonService {
         person.setIsActive(Boolean.TRUE);
         person.setCreatedDate(new Date());
 
-        UserName userName = new UserName();
-        userName.setActiveUserName(requestObj.getPersonUserName());
+        if (requestObj.getPersonUserName() != null && !requestObj.getPersonUserName().trim().isEmpty()) {
+            UserNameCreateRequest userNameReq = new UserNameCreateRequest();
+            userNameReq.setUserName(requestObj.getPersonUserName());
+            UserName createdUserName = userNameService.addUserName(userNameReq);
+            person.setUserName(createdUserName);
+        }
 
-        person.setUserName(userName);
         person.setName(getFullName(requestObj));
         person.setEmail(requestObj.getPersonEmail());
 
         //TODO: Add Phone Number Logic in PhoneNumber Service
+        if (requestObj.getPersonPhoneNumber() != null) {
+            PhoneNumberCreateRequest phoneReq = new PhoneNumberCreateRequest();
+            phoneReq.setCountryCode(requestObj.getPersonCountryCode());
+            phoneReq.setPhoneNumber(requestObj.getPersonPhoneNumber());
+            PhoneNumber createdPhone = phoneNumberService.addPhoneNumber(phoneReq);
+            person.setPhoneNumber(createdPhone);
+        }
+
         Boolean result = DemoApplication.Person_List.add(person);
 
         if (result) {
