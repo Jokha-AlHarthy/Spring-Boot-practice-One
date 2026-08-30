@@ -5,12 +5,14 @@ import com.cl.demo.entities.PhoneNumber;
 import com.cl.demo.requestobjects.PhoneNumberCreateRequest;
 import com.cl.demo.requestobjects.PhoneNumberUpdateRequest;
 import com.cl.demo.utils.HelperUtils;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+@Service
 public class PhoneNumberService {
     //POST /phoneNumber/add Call addPhoneNumber
     public PhoneNumber addPhoneNumber(PhoneNumberCreateRequest requestObj){
