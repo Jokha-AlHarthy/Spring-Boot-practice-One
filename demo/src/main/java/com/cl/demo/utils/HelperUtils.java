@@ -41,6 +41,13 @@ public class HelperUtils {
         return original != null && original.equals(update) ? original : update;
     }
 
+    //Long compare
+    public static Long compare(Long original, Long update){
+        if(update==null){
+            return original;
+        }
+        return original != null && original.equals(update) ? original : update;
+    }
 
 
 }
